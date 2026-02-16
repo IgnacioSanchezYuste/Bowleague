@@ -6,6 +6,7 @@ export default function InicioLayout() {
   return (
     <Stack
       screenOptions={{
+        headerShown: false,
         headerStyle: { backgroundColor: colors.white },
         headerTintColor: colors.secondary,
         headerTitleStyle: { fontWeight: '700' },

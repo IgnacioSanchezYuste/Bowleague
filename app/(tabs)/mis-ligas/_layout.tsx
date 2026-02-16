@@ -6,6 +6,7 @@ export default function MisLigasLayout() {
   return (
     <Stack
       screenOptions={{
+       
         headerStyle: { backgroundColor: colors.white },
         headerTintColor: colors.secondary,
         headerTitleStyle: { fontWeight: '700' },

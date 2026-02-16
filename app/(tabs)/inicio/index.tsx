@@ -190,9 +190,13 @@ export default function InicioScreen() {
             </Text>
           </View>
           <View style={styles.welcomeTexts}>
-            <Text style={styles.welcomeGreeting}>{getGreeting()},</Text>
-            <Text style={styles.welcomeName}>{user?.nombre || 'Jugador'}</Text>
-          </View>
+  <Text style={styles.welcomeGreeting}>
+    {getGreeting()},{" "}
+    <Text style={styles.welcomeName}>
+      {user?.nombre || 'Jugador'}
+    </Text>
+  </Text>
+</View>
         </View>
 
         {/* ── Resumen rapido (3 cards) ── */}
