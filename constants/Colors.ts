@@ -1,20 +1,28 @@
+// Paleta de colores de la aplicación.
+// Hay dos variantes: lightColors (modo claro) y darkColors (modo oscuro).
+// Los componentes nunca usan hex directamente; siempre consumen colors.xxx
+// a través del hook useTheme(), lo que hace el cambio de tema automático.
+
+// Interfaz que deben cumplir ambas paletas para garantizar que todos los
+// tokens de color existen en los dos temas.
 export interface ThemeColors {
-  primary: string;
-  secondary: string;
-  accent: string;
-  background: string;
-  white: string;
-  text: string;
-  textLight: string;
-  border: string;
-  success: string;
-  danger: string;
-  gold: string;
-  silver: string;
-  bronze: string;
-  overlay: string;
-  cardHighlight: string;
-  badgeOpen: string;
+  primary: string;       // Color principal: botones, iconos clave (rojo)
+  secondary: string;     // Color secundario: headers, texto de énfasis
+  accent: string;        // Acento: trofeos, destacados (naranja dorado)
+  background: string;    // Fondo general de las pantallas
+  white: string;         // Fondo de tarjetas y modales (blanco en claro, oscuro en dark)
+  text: string;          // Texto principal
+  textLight: string;     // Texto secundario y placeholders
+  border: string;        // Líneas separadoras
+  success: string;       // Confirmaciones y estados activos
+  danger: string;        // Errores y acciones destructivas
+  gold: string;          // 1.er puesto en ranking
+  silver: string;        // 2.º puesto en ranking
+  bronze: string;        // 3.er puesto en ranking
+  overlay: string;       // Fondo semitransparente de modales
+  cardHighlight: string; // Fondo suave para tarjetas destacadas
+  badgeOpen: string;     // Fondo del badge de estado "abierto"
+  // Fondos de acento para iconos de sección (suaves en claro, semitransparentes en oscuro)
   accentBgWarm: string;
   accentBgRed: string;
   accentBgOrange: string;

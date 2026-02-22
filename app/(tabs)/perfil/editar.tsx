@@ -1,3 +1,6 @@
+// Formulario de edición del perfil.
+// Los campos se inicializan con los datos actuales del usuario.
+// La contraseña es opcional: si se deja vacía no se modifica.
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -20,6 +23,7 @@ export default function EditarPerfilScreen() {
   const { user, updateProfile } = useAuth();
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
+  // Se precargan los valores actuales del usuario en cada campo.
   const [nombre, setNombre] = useState(user?.nombre || '');
   const [apellidos, setApellidos] = useState(user?.apellidos || '');
   const [email, setEmail] = useState(user?.email || '');
@@ -27,6 +31,7 @@ export default function EditarPerfilScreen() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // La contraseña solo se valida si el usuario escribe algo en el campo.
   function validate(): boolean {
     const newErrors: Record<string, string> = {};
     if (!nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';

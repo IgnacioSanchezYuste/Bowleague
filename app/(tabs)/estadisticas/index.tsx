@@ -1,3 +1,6 @@
+// Estadísticas globales acumuladas del usuario en todas sus ligas.
+// Muestra: ligas, partidos, puntos totales, mejor puntuación, media, strikes y spares.
+// La media se visualiza también como barra de progreso sobre 300 (puntuación máxima en bolos).
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';

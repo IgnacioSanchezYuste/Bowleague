@@ -1,3 +1,6 @@
+// Lista de jugadores que pertenecen a una liga.
+// Cada jugador muestra su rol (admin o jugador) y fecha de ingreso.
+// El usuario puede abandonar la liga desde esta pantalla.
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';

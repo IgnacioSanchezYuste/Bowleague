@@ -1,3 +1,6 @@
+// Pantalla de perfil del usuario.
+// Muestra los datos personales, las estadísticas globales y un interruptor de tema.
+// Incluye opciones para editar el perfil, cerrar sesión y eliminar la cuenta.
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -59,11 +62,13 @@ export default function PerfilScreen() {
     loadStats();
   }
 
+  // Cierra la sesión y redirige al login.
   async function handleLogout() {
     await logout();
     router.replace('/(auth)/login');
   }
 
+  // Muestra un diálogo de confirmación antes de eliminar la cuenta.
   function handleDelete() {
     Alert.alert(
       'Eliminar cuenta',
@@ -86,6 +91,7 @@ export default function PerfilScreen() {
     );
   }
 
+  // Formatea la fecha de registro en un texto legible en español.
   function formatearFecha(fecha: string) {
     return new Date(fecha).toLocaleDateString('es-ES', {
       day: 'numeric',

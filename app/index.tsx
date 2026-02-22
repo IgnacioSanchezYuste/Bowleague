@@ -1,3 +1,6 @@
+// Punto de entrada de la app.
+// No muestra contenido propio: solo redirige al usuario según su estado de sesión.
+// Mientras AuthContext carga la sesión guardada, muestra un spinner.
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -10,6 +13,7 @@ export default function Index() {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
+  // Espera a que AuthContext compruebe AsyncStorage antes de redirigir.
   if (isLoading) {
     return (
       <View style={styles.container}>

@@ -1,3 +1,6 @@
+// Layout principal con la barra de navegación inferior (tabs).
+// Define las cuatro secciones: Inicio, Mis Ligas, Estadísticas y Perfil.
+// Colores activos e inactivos se toman del tema activo (claro/oscuro).
 import { useTheme } from '@/context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';

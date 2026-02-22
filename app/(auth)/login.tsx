@@ -1,3 +1,6 @@
+// Pantalla de inicio de sesión.
+// Valida el formulario en cliente antes de llamar a la API.
+// Si el login es correcto, redirige al dashboard principal.
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -5,22 +8,23 @@ import { Ionicons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginScreen() {
   const { login } = useAuth();
   const { colors } = useTheme();
+  // Los estilos se recalculan solo cuando cambia el tema.
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,6 +32,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
+  // Validación local: comprueba formato de email y que la contraseña no esté vacía.
   function validate(): boolean {
     const newErrors: typeof errors = {};
     if (!email.trim()) newErrors.email = 'El email es obligatorio';
@@ -37,6 +42,7 @@ export default function LoginScreen() {
     return Object.keys(newErrors).length === 0;
   }
 
+  // Llama al contexto de auth; si falla muestra el mensaje de error del backend.
   async function handleLogin() {
     if (!validate()) return;
     setLoading(true);

@@ -1,3 +1,6 @@
+// Lista de partidos de una liga.
+// Cada tarjeta muestra fecha, lugar y estado del partido.
+// Pulsando una tarjeta se navega al detalle del partido con los resultados.
 import { ThemeColors } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
 import * as api from '@/services/api';

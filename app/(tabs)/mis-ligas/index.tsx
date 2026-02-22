@@ -1,6 +1,9 @@
+// Lista de ligas del usuario autenticado.
+// Permite ver todas las ligas en las que participa, unirse a una nueva con código
+// de invitación y navegar al detalle de cada liga.
 import { ThemeColors } from '@/constants/Colors';
-import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import * as api from '@/services/api';
 import { Liga } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,6 +29,7 @@ export default function MisLigasScreen() {
   const [ligas, setLigas] = useState<Liga[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  // Estado del modal para unirse con código.
   const [codigoModalVisible, setCodigoModalVisible] = useState(false);
   const [codigo, setCodigo] = useState('');
   const [joining, setJoining] = useState(false);

@@ -1,17 +1,24 @@
+// Capa de acceso a la API REST del backend.
+// Todas las peticiones pasan por la función request(), que centraliza
+// la URL base, las cabeceras y el manejo de errores.
 import {
-    EstadisticasUsuario,
-    Jugador,
-    Liga,
-    PartidaJugador,
-    Partido,
-    ProximoPartido,
-    RankingEntry,
-    UltimoResultado,
-    Usuario,
+  EstadisticasUsuario,
+  Jugador,
+  Liga,
+  PartidaJugador,
+  Partido,
+  ProximoPartido,
+  RankingEntry,
+  UltimoResultado,
+  Usuario,
 } from '@/types';
 
 const BASE_URL = 'https://ignaciosanchezyuste.es/API_Bowleague';
 
+// Función genérica que ejecuta cualquier llamada HTTP a la API.
+// Si el servidor devuelve un error, lanza una excepción con el mensaje recibido.
+// La API envuelve los datos en un objeto con una clave dinámica (ej: { liga: {...} }),
+// así que se extrae automáticamente el valor útil.
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${BASE_URL}${endpoint}`;
   const response = await fetch(url, {
@@ -28,15 +35,16 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     throw new Error(json.message || `Error ${response.status}`);
   }
 
-  // The API wraps responses in { "resourceName": ... }
-  // e.g. { "ligas": [...] }, { "liga": {...} }, { "stats": {...} }
+  // La API envuelve las respuestas en { "recurso": ... }
+  // p.ej. { "ligas": [...] }, { "liga": {...} }, { "stats": {...} }
   if (json.data !== undefined) return json.data;
   const keys = Object.keys(json).filter(k => k !== 'success' && k !== 'message');
   if (keys.length === 1) return json[keys[0]];
   return json;
 }
 
-// ── Auth ──────────────────────────────────────────────
+// ── Auth ─────────────────────────────────────────────────────────────────
+// Registro e inicio de sesión. El backend devuelve el objeto Usuario completo.
 
 export async function registro(body: {
   nombre: string;
@@ -61,7 +69,8 @@ export async function login(body: {
   });
 }
 
-// ── Usuarios ──────────────────────────────────────────
+// ── Usuarios ─────────────────────────────────────────────────────────────
+// CRUD de usuarios y endpoints de datos personalizados del usuario autenticado.
 
 export async function getUsuarios(): Promise<Usuario[]> {
   return request<Usuario[]>('/usuarios');
@@ -89,6 +98,8 @@ export async function getUsuarioLigas(id: number): Promise<Liga[]> {
   return request<Liga[]>(`/usuarios/${id}/ligas`);
 }
 
+// El backend devuelve números como strings; se normalizan aquí para no
+// tener que hacer conversiones en cada componente.
 export async function getUsuarioStats(id: number): Promise<EstadisticasUsuario> {
   const raw = await request<any>(`/usuarios/${id}/stats`);
   return {
@@ -102,6 +113,7 @@ export async function getUsuarioStats(id: number): Promise<EstadisticasUsuario> 
   };
 }
 
+// Partidos futuros del usuario para mostrar en el dashboard.
 export async function getProximosPartidos(userId: number): Promise<ProximoPartido[]> {
   const raw = await request<any>(`/usuarios/${userId}/proximos-partidos`);
   if (!Array.isArray(raw)) return [];
@@ -117,6 +129,7 @@ export async function getProximosPartidos(userId: number): Promise<ProximoPartid
   }));
 }
 
+// Últimas partidas jugadas por el usuario para mostrar en el dashboard.
 export async function getUltimosResultados(userId: number): Promise<UltimoResultado[]> {
   const raw = await request<any>(`/usuarios/${userId}/ultimos-resultados`);
   if (!Array.isArray(raw)) return [];
@@ -134,7 +147,8 @@ export async function getUltimosResultados(userId: number): Promise<UltimoResult
   }));
 }
 
-// ── Ligas ─────────────────────────────────────────────
+// ── Ligas ─────────────────────────────────────────────────────────────────
+// CRUD de ligas más las acciones de membresía: unirse, salir y unirse por código.
 
 export async function getLigas(estado?: string): Promise<Liga[]> {
   const query = estado ? `?estado=${estado}` : '';
@@ -194,6 +208,8 @@ export async function salirLiga(
   });
 }
 
+// Se convierte el código a mayúsculas antes de enviarlo para evitar problemas
+// si el usuario lo introduce en minúsculas.
 export async function unirsePorCodigo(
   usuarioId: number,
   codigo: string
@@ -208,6 +224,7 @@ export async function getJugadoresLiga(ligaId: number): Promise<Jugador[]> {
   return request<Jugador[]>(`/ligas/${ligaId}/jugadores`);
 }
 
+// El ranking también llega con valores numéricos en string; se normalizan igual.
 export async function getRankingLiga(ligaId: number): Promise<RankingEntry[]> {
   const raw = await request<any[]>(`/ligas/${ligaId}/ranking`);
   if (!Array.isArray(raw)) return [];
@@ -226,7 +243,8 @@ export async function getRankingLiga(ligaId: number): Promise<RankingEntry[]> {
   }));
 }
 
-// ── Partidos ──────────────────────────────────────────
+// ── Partidos ──────────────────────────────────────────────────────────────
+// CRUD de partidos de una liga.
 
 export async function getPartidosLiga(ligaId: number): Promise<Partido[]> {
   return request<Partido[]>(`/ligas/${ligaId}/partidos`);
@@ -260,7 +278,10 @@ export async function deletePartido(id: number): Promise<void> {
   return request<void>(`/partidos/${id}`, { method: 'DELETE' });
 }
 
-// ── Resultados ────────────────────────────────────────
+// ── Resultados ────────────────────────────────────────────────────────────
+// Registro y edición de la puntuación de un jugador en un partido.
+// El endpoint usa usuario_id en lugar de resultadoId para simplificar
+// (cada usuario solo puede tener un resultado por partido).
 
 export async function crearResultado(
   partidoId: number,

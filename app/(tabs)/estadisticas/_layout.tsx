@@ -1,3 +1,4 @@
+// Layout de la pestaña Estadísticas. Solo expone la pantalla de estadísticas globales.
 import { useTheme } from '@/context/ThemeContext';
 import { Stack } from 'expo-router';
 

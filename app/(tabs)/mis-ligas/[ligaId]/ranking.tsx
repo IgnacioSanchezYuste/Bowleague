@@ -1,3 +1,6 @@
+// Ranking de una liga ordenado por posición.
+// Resalta con oro, plata y bronce los tres primeros puestos.
+// La fila del usuario autenticado aparece destacada para fácil identificación.
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -45,6 +48,7 @@ export default function RankingScreen() {
     loadRanking();
   }
 
+  // Devuelve el color de medalla para los tres primeros puestos, o null para el resto.
   function getMedalColor(pos: number): string | null {
     if (pos === 1) return colors.gold;
     if (pos === 2) return colors.silver;

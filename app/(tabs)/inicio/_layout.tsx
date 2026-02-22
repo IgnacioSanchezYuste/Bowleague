@@ -1,3 +1,4 @@
+// Layout de la pestaña Inicio. Solo contiene la pantalla principal (index).
 import { useTheme } from '@/context/ThemeContext';
 import { Stack } from 'expo-router';
 

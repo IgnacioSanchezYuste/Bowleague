@@ -1,3 +1,4 @@
+// Layout de la pestaña Perfil. Registra la pantalla principal y la de edición de datos.
 import { useTheme } from '@/context/ThemeContext';
 import { Stack } from 'expo-router';
 

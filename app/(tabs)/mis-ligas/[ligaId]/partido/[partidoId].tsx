@@ -1,3 +1,6 @@
+// Detalle de un partido: lista de resultados de todos los jugadores ordenados por puntuación.
+// El usuario puede añadir su resultado si aún no lo ha registrado, o editarlo si ya existe.
+// La puntuación debe estar entre 0 y 300 (rango válido en bolos).
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -57,10 +60,12 @@ export default function PartidoDetalleScreen() {
     loadPartido();
   }
 
+  // Busca el resultado del usuario autenticado dentro de los resultados del partido.
   const myResult = partido?.resultados?.find(
     (r) => r.usuario_id === user?.id
   );
 
+  // Abre el modal en modo edición (si ya tiene resultado) o en modo nuevo registro.
   function openModal(edit: boolean) {
     if (edit && myResult) {
       setPuntuacion(myResult.puntuacion.toString());
@@ -75,6 +80,7 @@ export default function PartidoDetalleScreen() {
     setModalVisible(true);
   }
 
+  // Guarda o actualiza el resultado según si el usuario ya tiene uno registrado.
   async function handleSave() {
     if (!user || !partido) return;
     const punt = Number(puntuacion);

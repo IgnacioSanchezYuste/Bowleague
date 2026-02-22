@@ -1,3 +1,5 @@
+// Formulario para crear un partido dentro de una liga.
+// La fecha y el máximo de jugadores (entre 1 y 6) son los únicos campos obligatorios.
 import { ThemeColors } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
 import * as api from '@/services/api';

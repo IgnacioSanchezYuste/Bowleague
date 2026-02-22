@@ -1,6 +1,9 @@
+// Pantalla de detalle de una liga.
+// Muestra la información general y las secciones disponibles: ranking, partidos y jugadores.
+// Si el usuario es admin, también muestra el código de invitación con opción de copiarlo.
 import { ThemeColors } from '@/constants/Colors';
-import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import * as api from '@/services/api';
 import { Liga } from '@/types';
 import { Ionicons } from '@expo/vector-icons';

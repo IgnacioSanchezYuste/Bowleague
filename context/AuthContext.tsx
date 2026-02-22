@@ -1,8 +1,12 @@
+// Contexto de autenticación global.
+// Gestiona la sesión del usuario: login, registro, logout, edición de perfil y borrado de cuenta.
+// La sesión se persiste en AsyncStorage para que no se pierda al cerrar la app.
 import * as api from '@/services/api';
 import { Usuario } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
+// Clave bajo la que se guarda el objeto usuario en AsyncStorage.
 const USER_KEY = '@bowleague_user';
 
 interface AuthContextType {
@@ -23,18 +27,22 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
+// Hook para consumir el contexto en cualquier componente.
 export function useAuth() {
   return useContext(AuthContext);
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<Usuario | null>(null);
+  // isLoading es true mientras se comprueba si hay sesión guardada al arrancar.
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadStoredUser();
   }, []);
 
+  // Al arrancar la app, intenta recuperar el usuario de AsyncStorage.
+  // Si el objeto guardado es inválido (sin id), lo elimina por seguridad.
   async function loadStoredUser() {
     try {
       const stored = await AsyncStorage.getItem(USER_KEY);
@@ -53,6 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // Llama al endpoint de login y guarda el usuario en estado y AsyncStorage.
   const loginFn = useCallback(async (email: string, password: string) => {
     const userData = await api.login({ email, password });
     if (!userData?.id) {
@@ -62,6 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(userData));
   }, []);
 
+  // Registro: igual que login pero primero crea la cuenta en el backend.
   const registerFn = useCallback(
     async (data: { nombre: string; apellidos?: string; email: string; password: string }) => {
       const userData = await api.registro(data);
@@ -74,11 +84,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  // Limpia el estado y elimina la sesión guardada.
   const logoutFn = useCallback(async () => {
     setUser(null);
     await AsyncStorage.removeItem(USER_KEY);
   }, []);
 
+  // Actualiza los datos del perfil y sincroniza AsyncStorage con la respuesta del backend.
   const updateProfileFn = useCallback(
     async (data: Partial<Usuario> & { password?: string }) => {
       if (!user) return;
@@ -89,6 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [user]
   );
 
+  // Elimina la cuenta en el backend y cierra sesión localmente.
   const deleteAccountFn = useCallback(async () => {
     if (!user) return;
     await api.deleteUsuario(user.id);

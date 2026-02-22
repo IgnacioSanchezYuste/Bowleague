@@ -1,3 +1,6 @@
+// Layout de la sección Mis Ligas.
+// Registra todas las pantallas de la pila: lista de ligas, crear liga,
+// detalle de liga y sus subsecciones (ranking, partidos, jugadores, crear partido y detalle de partido).
 import { useTheme } from '@/context/ThemeContext';
 import { Stack } from 'expo-router';
 

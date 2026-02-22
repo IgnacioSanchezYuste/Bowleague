@@ -1,3 +1,7 @@
+// Dashboard principal del usuario.
+// Carga en paralelo las estadísticas globales, las ligas activas, los próximos partidos
+// y los últimos resultados. También calcula la posición del usuario en cada liga.
+// Se recarga cada vez que la pantalla vuelve al foco (useFocusEffect).
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -40,10 +44,13 @@ export default function InicioScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  // Estado del modal para unirse a una liga con código de invitación.
   const [codigoModalVisible, setCodigoModalVisible] = useState(false);
   const [codigo, setCodigo] = useState('');
   const [joining, setJoining] = useState(false);
 
+  // Carga todos los datos del dashboard en paralelo para minimizar espera.
+  // Las posiciones en ligas requieren una petición adicional por cada liga.
   const loadDashboard = useCallback(async () => {
     if (!user?.id) return;
     try {
@@ -60,7 +67,7 @@ export default function InicioScreen() {
       setProximosPartidos(Array.isArray(proximosData) ? proximosData : []);
       setUltimosResultados(Array.isArray(ultimosData) ? ultimosData : []);
 
-      // Fetch position in each league
+      // Busca la posición del usuario en el ranking de cada liga.
       const posicionesPromises = ligasList.map(async (liga) => {
         try {
           const ranking = await api.getRankingLiga(liga.id);
@@ -100,6 +107,7 @@ export default function InicioScreen() {
     loadDashboard();
   }
 
+  // Valida que el código tenga al menos 6 caracteres antes de enviarlo.
   async function handleUnirsePorCodigo() {
     if (!user?.id) return;
     const trimmed = codigo.trim();

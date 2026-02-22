@@ -1,3 +1,6 @@
+// Pantalla de registro de nuevo usuario.
+// Valida nombre, email, contraseña (mínimo 6 caracteres) y confirmación antes de enviar.
+// Si el registro es correcto, redirige directamente al dashboard.
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -31,6 +34,7 @@ export default function RegistroScreen() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Valida todos los campos del formulario antes de enviar.
   function validate(): boolean {
     const newErrors: Record<string, string> = {};
     if (!nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
@@ -43,6 +47,7 @@ export default function RegistroScreen() {
     return Object.keys(newErrors).length === 0;
   }
 
+  // Los apellidos son opcionales; si el campo está vacío no se envían.
   async function handleRegister() {
     if (!validate()) return;
     setLoading(true);

@@ -1,3 +1,6 @@
+// Formulario para crear una nueva liga.
+// Solo el nombre es obligatorio; el resto de campos son opcionales.
+// Tras crear la liga, el backend genera automáticamente el código de invitación.
 import { ThemeColors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -30,6 +33,7 @@ export default function CrearLigaScreen() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Valida que el nombre no esté vacío y que el máximo de jugadores sea un número válido.
   function validate(): boolean {
     const newErrors: Record<string, string> = {};
     if (!nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
