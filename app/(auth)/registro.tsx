@@ -8,18 +8,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+const fondoImg = require('@/assets/images/Fondo.jpg');
 
 export default function RegistroScreen() {
   const { register } = useAuth();
@@ -67,6 +69,7 @@ export default function RegistroScreen() {
   }
 
   return (
+     <ImageBackground source={fondoImg} style={styles.background} resizeMode="cover">
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.flex}
@@ -174,14 +177,21 @@ export default function RegistroScreen() {
       </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 function createStyles(colors: ThemeColors) {
   return StyleSheet.create({
+     background: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+    },
+    // Transparente para dejar ver la imagen de fondo.
     container: {
       flex: 1,
-      backgroundColor: colors.background,
+      backgroundColor: 'transparent',
     },
     flex: {
       flex: 1,
@@ -198,7 +208,7 @@ function createStyles(colors: ThemeColors) {
     title: {
       fontSize: 28,
       fontWeight: '800',
-      color: colors.secondary,
+      color: '#ffffff',
       marginTop: 12,
     },
     subtitle: {
@@ -207,13 +217,13 @@ function createStyles(colors: ThemeColors) {
       marginTop: 4,
     },
     form: {
-      backgroundColor: colors.white,
+      backgroundColor: 'rgba(220, 222, 226, 0.78)',
       borderRadius: 16,
       padding: 24,
       elevation: 4,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
+      shadowOpacity: 0.15,
       shadowRadius: 8,
     },
     label: {

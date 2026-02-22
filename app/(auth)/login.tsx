@@ -10,6 +10,7 @@ import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -20,6 +21,9 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+// Imagen de fondo de la pantalla de login.
+const fondoImg = require('@/assets/images/Fondo.jpg');
 
 export default function LoginScreen() {
   const { login } = useAuth();
@@ -57,19 +61,20 @@ export default function LoginScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-      >
+    <ImageBackground source={fondoImg} style={styles.background} resizeMode="cover">
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+          style={styles.flex}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+        >
         <View style={styles.header}>
           <Ionicons name="bowling-ball" size={64} color={colors.primary} />
           <Text style={styles.title}>BowLeague</Text>
-          <Text style={styles.subtitle}>Gestiona tus ligas de bolos</Text>
+          
         </View>
 
         <View style={styles.form}>
@@ -129,17 +134,25 @@ export default function LoginScreen() {
             </Link>
           </View>
         </View>
-      </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 function createStyles(colors: ThemeColors) {
   return StyleSheet.create({
+    // Ocupa toda la pantalla y sirve de contenedor para ImageBackground.
+    background: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+    },
+    // Transparente para dejar ver la imagen de fondo.
     container: {
       flex: 1,
-      backgroundColor: colors.background,
+      backgroundColor: 'transparent',
     },
     flex: {
       flex: 1,
@@ -156,22 +169,22 @@ function createStyles(colors: ThemeColors) {
     title: {
       fontSize: 32,
       fontWeight: '800',
-      color: colors.secondary,
+      color: '#ffffff',
       marginTop: 12,
     },
     subtitle: {
       fontSize: 16,
-      color: colors.textLight,
+      color: '#000000',
       marginTop: 4,
     },
     form: {
-      backgroundColor: colors.white,
+      backgroundColor: 'rgba(220, 222, 226, 0.78)',
       borderRadius: 16,
       padding: 24,
       elevation: 4,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
+      shadowOpacity: 0.15,
       shadowRadius: 8,
     },
     label: {
