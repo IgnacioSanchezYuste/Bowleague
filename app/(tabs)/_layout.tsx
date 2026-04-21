@@ -19,13 +19,21 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.border,
-          height: 60 + insets.bottom,
-          paddingBottom: 8 + insets.bottom,
-          paddingTop: 4,
+          height: 70 + insets.bottom,
+          paddingBottom: insets.bottom,
+          paddingTop: 6,
+          overflow: 'visible',
+        },
+        tabBarItemStyle: {
+          overflow: 'visible',
+          paddingVertical: 4,
+          height: 70,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '600',
+          marginTop: 2,
+          flexShrink: 0,
         },
       }}
     >
