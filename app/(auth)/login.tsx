@@ -10,7 +10,6 @@ import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -22,21 +21,16 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Imagen de fondo de la pantalla de login.
-const fondoImg = require('@/assets/images/Fondo.jpg');
-
 export default function LoginScreen() {
   const { login } = useAuth();
-  const { colors } = useTheme();
-  // Los estilos se recalculan solo cuando cambia el tema.
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
-  // Validación local: comprueba formato de email y que la contraseña no esté vacía.
   function validate(): boolean {
     const newErrors: typeof errors = {};
     if (!email.trim()) newErrors.email = 'El email es obligatorio';
@@ -46,7 +40,6 @@ export default function LoginScreen() {
     return Object.keys(newErrors).length === 0;
   }
 
-  // Llama al contexto de auth; si falla muestra el mensaje de error del backend.
   async function handleLogin() {
     if (!validate()) return;
     setLoading(true);
@@ -61,101 +54,126 @@ export default function LoginScreen() {
   }
 
   return (
-    <ImageBackground source={fondoImg} style={styles.background} resizeMode="cover">
-      <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView
-          style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      {/* Formas decorativas de fondo */}
+      <View style={styles.blobPrimary} pointerEvents="none" />
+      <View style={styles.blobAccent} pointerEvents="none" />
+
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-        <View style={styles.header}>
-          <Ionicons name="bowling-ball" size={64} color={colors.primary} />
-          <Text style={styles.title}>BowLeague</Text>
-          
-        </View>
+          <View style={styles.header}>
+            <View style={styles.logoBadge}>
+              <Ionicons name="bowling-ball" size={40} color={colors.primary} />
+            </View>
+            <Text style={styles.title}>BowLeague</Text>
+            <Text style={styles.subtitle}>Bienvenido de nuevo</Text>
+          </View>
 
-        <View style={styles.form}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={[styles.input, errors.email && styles.inputError]}
-            placeholder="tu@email.com"
-            placeholderTextColor={colors.textLight}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
-          />
-          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-
-          <Text style={styles.label}>Contraseña</Text>
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={[styles.passwordInput, errors.password && styles.inputError]}
-              placeholder="Tu contraseña"
-              placeholderTextColor={colors.textLight}
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity
-              style={styles.eyeButton}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Ionicons
-                name={showPassword ? 'eye-off' : 'eye'}
-                size={22}
-                color={colors.textLight}
+          <View style={styles.card}>
+            <Text style={styles.label}>Email</Text>
+            <View style={[styles.inputWrap, errors.email && styles.inputError]}>
+              <Ionicons name="mail-outline" size={18} color={colors.textLight} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="tu@email.com"
+                placeholderTextColor={colors.textLight}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={email}
+                onChangeText={setEmail}
               />
-            </TouchableOpacity>
-          </View>
-          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+            </View>
+            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-          <TouchableOpacity
-            style={[styles.button, loading && styles.buttonDisabled]}
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              <Text style={styles.buttonText}>Iniciar Sesión</Text>
-            )}
-          </TouchableOpacity>
-
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>¿No tienes cuenta? </Text>
-            <Link href="/(auth)/registro" asChild>
-              <TouchableOpacity>
-                <Text style={styles.linkText}>Regístrate</Text>
+            <Text style={styles.label}>Contraseña</Text>
+            <View style={[styles.inputWrap, errors.password && styles.inputError]}>
+              <Ionicons name="lock-closed-outline" size={18} color={colors.textLight} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Tu contraseña"
+                placeholderTextColor={colors.textLight}
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity
+                style={styles.eyeButton}
+                onPress={() => setShowPassword(!showPassword)}
+                hitSlop={8}
+              >
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color={colors.textLight}
+                />
               </TouchableOpacity>
-            </Link>
+            </View>
+            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+
+            <TouchableOpacity
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleLogin}
+              disabled={loading}
+              activeOpacity={0.85}
+            >
+              {loading ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : (
+                <Text style={styles.buttonText}>Iniciar Sesión</Text>
+              )}
+            </TouchableOpacity>
+
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>¿No tienes cuenta? </Text>
+              <Link href="/(auth)/registro" asChild>
+                <TouchableOpacity hitSlop={6}>
+                  <Text style={styles.linkText}>Regístrate</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
           </View>
-        </View>
         </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </ImageBackground>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
-function createStyles(colors: ThemeColors) {
+function createStyles(colors: ThemeColors, isDark: boolean) {
   return StyleSheet.create({
-    // Ocupa toda la pantalla y sirve de contenedor para ImageBackground.
-    background: {
-      flex: 1,
-      width: '100%',
-      height: '100%',
-    },
-    // Transparente para dejar ver la imagen de fondo.
     container: {
       flex: 1,
-      backgroundColor: 'transparent',
+      backgroundColor: colors.background,
+      overflow: 'hidden',
     },
-    flex: {
-      flex: 1,
+    flex: { flex: 1 },
+    // Círculos decorativos tras la card para dar un look moderno sin imagen.
+    blobPrimary: {
+      position: 'absolute',
+      width: 280,
+      height: 280,
+      borderRadius: 140,
+      backgroundColor: colors.primary,
+      opacity: isDark ? 0.18 : 0.12,
+      top: -100,
+      right: -90,
+    },
+    blobAccent: {
+      position: 'absolute',
+      width: 220,
+      height: 220,
+      borderRadius: 110,
+      backgroundColor: colors.accent,
+      opacity: isDark ? 0.14 : 0.10,
+      top: 140,
+      left: -80,
     },
     scroll: {
       flexGrow: 1,
@@ -164,77 +182,96 @@ function createStyles(colors: ThemeColors) {
     },
     header: {
       alignItems: 'center',
-      marginBottom: 40,
+      marginBottom: 32,
+    },
+    logoBadge: {
+      width: 84,
+      height: 84,
+      borderRadius: 24,
+      backgroundColor: colors.white,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 16,
+      elevation: 6,
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.25,
+      shadowRadius: 12,
     },
     title: {
       fontSize: 32,
       fontWeight: '800',
-      color: '#ffffff',
-      marginTop: 12,
+      color: colors.text,
+      letterSpacing: 0.3,
     },
     subtitle: {
-      fontSize: 16,
-      color: '#000000',
-      marginTop: 4,
+      fontSize: 15,
+      color: colors.textLight,
+      marginTop: 6,
     },
-    form: {
-      backgroundColor: 'rgba(220, 222, 226, 0.78)',
-      borderRadius: 16,
+    card: {
+      backgroundColor: colors.white,
+      borderRadius: 24,
       padding: 24,
-      elevation: 4,
+      elevation: 8,
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: isDark ? 0.4 : 0.08,
+      shadowRadius: 20,
+      borderWidth: isDark ? 1 : 0,
+      borderColor: colors.border,
     },
     label: {
-      fontSize: 14,
+      fontSize: 13,
       fontWeight: '600',
-      color: colors.text,
-      marginBottom: 6,
-      marginTop: 16,
+      color: colors.textLight,
+      marginBottom: 8,
+      marginTop: 14,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    inputWrap: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      borderRadius: 14,
+      backgroundColor: colors.background,
+      paddingHorizontal: 14,
+    },
+    inputIcon: {
+      marginRight: 10,
     },
     input: {
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 12,
-      padding: 14,
+      flex: 1,
+      paddingVertical: 14,
       fontSize: 16,
       color: colors.text,
-      backgroundColor: colors.background,
     },
     inputError: {
       borderColor: colors.danger,
     },
-    passwordContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 12,
-      backgroundColor: colors.background,
-    },
-    passwordInput: {
-      flex: 1,
-      padding: 14,
-      fontSize: 16,
-      color: colors.text,
-      borderWidth: 0,
-    },
     eyeButton: {
-      padding: 14,
+      paddingHorizontal: 4,
+      paddingVertical: 8,
     },
     errorText: {
       color: colors.danger,
       fontSize: 12,
-      marginTop: 4,
+      marginTop: 6,
+      marginLeft: 4,
     },
     button: {
       backgroundColor: colors.primary,
-      borderRadius: 12,
-      padding: 16,
+      borderRadius: 14,
+      paddingVertical: 16,
       alignItems: 'center',
-      marginTop: 24,
+      marginTop: 28,
+      elevation: 4,
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.35,
+      shadowRadius: 10,
     },
     buttonDisabled: {
       opacity: 0.7,
@@ -243,11 +280,12 @@ function createStyles(colors: ThemeColors) {
       color: '#FFFFFF',
       fontSize: 16,
       fontWeight: '700',
+      letterSpacing: 0.3,
     },
     footer: {
       flexDirection: 'row',
       justifyContent: 'center',
-      marginTop: 20,
+      marginTop: 22,
     },
     footerText: {
       color: colors.textLight,
@@ -256,7 +294,7 @@ function createStyles(colors: ThemeColors) {
     linkText: {
       color: colors.primary,
       fontSize: 14,
-      fontWeight: '600',
+      fontWeight: '700',
     },
   });
 }

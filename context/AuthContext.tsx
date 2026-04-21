@@ -4,7 +4,7 @@
 import * as api from '@/services/api';
 import { Usuario } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 // Clave bajo la que se guarda el objeto usuario en AsyncStorage.
 const USER_KEY = '@bowleague_user';
@@ -109,20 +109,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await AsyncStorage.removeItem(USER_KEY);
   }, [user]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        isLoggedIn: !!user,
-        login: loginFn,
-        register: registerFn,
-        logout: logoutFn,
-        updateProfile: updateProfileFn,
-        deleteAccount: deleteAccountFn,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  // Memoizado para que el value del Provider sea referencialmente estable
+  // y no fuerce re-render a todos los consumidores en cada render.
+  const value = useMemo(
+    () => ({
+      user,
+      isLoading,
+      isLoggedIn: !!user,
+      login: loginFn,
+      register: registerFn,
+      logout: logoutFn,
+      updateProfile: updateProfileFn,
+      deleteAccount: deleteAccountFn,
+    }),
+    [user, isLoading, loginFn, registerFn, logoutFn, updateProfileFn, deleteAccountFn]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

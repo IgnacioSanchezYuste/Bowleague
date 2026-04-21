@@ -2,7 +2,7 @@
 // Guarda la preferencia en AsyncStorage para que persista entre sesiones.
 import { darkColors, lightColors, ThemeColors } from '@/constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 // Clave bajo la que se guarda la preferencia de tema.
 const THEME_KEY = '@bowleague_theme';
@@ -44,12 +44,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  // Se recalcula en cada render solo si isDark cambia.
-  const colors = isDark ? darkColors : lightColors;
-
-  return (
-    <ThemeContext.Provider value={{ isDark, colors, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
+  // Memoizado para que el value del Provider sea referencialmente estable
+  // y no fuerce re-render a todos los consumidores en cada render.
+  const value = useMemo(
+    () => ({
+      isDark,
+      colors: isDark ? darkColors : lightColors,
+      toggleTheme,
+    }),
+    [isDark, toggleTheme]
   );
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
